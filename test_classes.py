@@ -1,4 +1,3 @@
-from re import M
 from classes import Board
 from pytest import raises
 from exceptions import SizeError
@@ -62,4 +61,18 @@ def test_board_set_biggest():
     #     (1 pyramids seen from the left of the first row)
     result = '{3} {1, 2} {1, 2} \n{1, 2} {1, 2, 3} {1, 2, 3} '
     result += '\n{1, 2} {1, 2, 3} {1, 2, 3} '
+    assert result == str(myboard)
+
+
+def test_board_fill_max():
+    myboard = Board(3)
+    test_contents = [[{1, 2, 3}, {1, 2, 3}, {1, 2, 3}] for _ in range(3)]
+    assert myboard.contents == test_contents
+    myboard.fill_max(3, 2)
+    #     X X X
+    #     X X X
+    #     X X X < 3
+    #     (3 pyramids seen from the right of the last row)
+    result = '{1, 2} {1, 3} {2, 3} \n{1, 2} {1, 3} {2, 3} '
+    result += '\n{3} {2} {1} '
     assert result == str(myboard)
