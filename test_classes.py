@@ -40,3 +40,11 @@ def test_board_contents_count_empty_init():
 def test_board_str():
     myboard = Board(2)
     assert str(myboard) == "{1, 2} {1, 2} \n{1, 2} {1, 2} "
+
+
+def test_board_remove_repeatitions():
+    myboard = Board(2)
+    myboard.contents[0][0] = {2, }
+    assert myboard.contents == [[{2, }, {1, 2}], [{1, 2}, {1, 2}]]
+    myboard.remove_repeatitions(0, 0)
+    assert myboard.contents == [[{2, }, {1, }], [{1, }, {2, }]]

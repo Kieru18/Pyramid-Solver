@@ -25,9 +25,6 @@ class Board():
     def size(self):
         return self._size
 
-    def set_cell(self, row_index, column_index, value):
-        self.contents[row_index][column_index] = {value, }
-
     def __str__(self) -> str:
         output = ''
         for row in self.contents:
