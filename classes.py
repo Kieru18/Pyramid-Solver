@@ -25,6 +25,9 @@ class Board():
     def size(self):
         return self._size
 
+    def set_cell(self, row_index, column_index, value):
+        self.contents[row_index][column_index] = {value, }
+
     def __str__(self) -> str:
         output = ''
         for row in self.contents:
@@ -32,3 +35,16 @@ class Board():
                 output += f'{str(value)} '
             output += '\n'
         return output[:-1]
+
+    def remove_repeatitions(self, row_index, column_index):
+        """ removes any repeated numbers in column and row
+        recursively checks row and column for new values to delete """
+        values = self.contents[row_index][column_index]
+        if len(values) == 1:
+            values = list(values)[0]
+            for index in range(self.size()):
+                self.contents[row_index][index].discard(values)
+                self.contents[index][column_index].discard(values)
+                self.remove_repeatitions(row_index, index)
+                self.remove_repeatitions(index, column_index)
+            self.contents[row_index][column_index].add(values)
