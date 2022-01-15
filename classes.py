@@ -45,3 +45,21 @@ class Board():
                 self.remove_repeatitions(row_index, index)
                 self.remove_repeatitions(index, column_index)
             self.contents[row_index][column_index].add(values)
+
+    def set_biggest(self, side, index):
+        """ solves cues with a value of 1
+        (fills a cell on the edge with N) """
+        if sides[side] == 'up':
+            row_index = 0
+            column_index = index
+        if sides[side] == 'down':
+            row_index = self.size()-1
+            column_index = index
+        if sides[side] == 'left':
+            row_index = index
+            column_index = 0
+        if sides[side] == 'right':
+            row_index = index
+            column_index = self.size()-1
+        self.contents[row_index][column_index] = {self.size(), }
+        self.remove_repeatitions(row_index, column_index)
