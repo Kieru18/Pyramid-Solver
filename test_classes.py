@@ -28,3 +28,10 @@ def test_board_set_size():
     assert myboard.size() == 12
     myboard.set_size(2)
     assert myboard.size() == 2
+
+
+def test_board_contents_count_empty_init():
+    myboard = Board(3)
+    test_contents = [[{1, 2, 3}, {1, 2, 3}, {1, 2, 3}] for _ in range(3)]
+    assert myboard.contents == test_contents
+    assert myboard.count == {1: 0, 2: 0, 3: 0}
