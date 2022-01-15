@@ -83,3 +83,31 @@ class Board():
             for col_index in range(self.size()):
                 self.contents[index][col_index] = {self.size()-col_index, }
                 self.remove_repeatitions(index, col_index)
+
+    def fill(self, side, index, value):
+        """ solves cues with a value between 1 and N
+        removes posibilities which would obstruct view
+        in cells closer to edge """
+        # example: 3|1234|1234|1234|1234| N=4
+        #   =>      |12  |123 |1234|1234|
+
+        # @FIXME
+        # code fragmentarisation
+        value = int(value)
+        nums = [i for i in range(1, self.size()+1)]
+        if sides[side] == 'up':
+            for row_index in range(value-1):
+                numset = nums[-(value-1)+row_index:]
+                self.contents[row_index][index] = self.contents[row_index][index].difference(numset)
+        if sides[side] == 'down':
+            for row_index in range(value-1):
+                numset = nums[-(value-1)+row_index:]
+                self.contents[self.size()-row_index-1][index] = self.contents[self.size()-row_index-1][index].difference(numset)
+        if sides[side] == 'left':
+            for column_index in range(value-1):
+                numset = nums[-(value-1)+column_index:]
+                self.contents[index][column_index] = self.contents[index][column_index].difference(numset)
+        if sides[side] == 'right':
+            for column_index in range(value-1):
+                numset = nums[-(value-1)+column_index:]
+                self.contents[index][self.size()-column_index-1] = self.contents[index][self.size()-column_index-1].difference(numset)
