@@ -35,3 +35,8 @@ def test_board_contents_count_empty_init():
     test_contents = [[{1, 2, 3}, {1, 2, 3}, {1, 2, 3}] for _ in range(3)]
     assert myboard.contents == test_contents
     assert myboard.count == {1: 0, 2: 0, 3: 0}
+
+
+def test_board_str():
+    myboard = Board(2)
+    assert str(myboard) == "{1, 2} {1, 2} \n{1, 2} {1, 2} "
