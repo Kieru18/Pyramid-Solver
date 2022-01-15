@@ -63,3 +63,23 @@ class Board():
             column_index = self.size()-1
         self.contents[row_index][column_index] = {self.size(), }
         self.remove_repeatitions(row_index, column_index)
+
+    def fill_max(self, side, index):
+        """ solves cues with a value of N
+        (fills board with subsequent values from 1 to N) """
+        if sides[side] == 'up':
+            for row_index in range(self.size()):
+                self.contents[row_index][index] = {row_index+1, }
+                self.remove_repeatitions(row_index, index)
+        if sides[side] == 'down':
+            for row_index in range(self.size()):
+                self.contents[row_index][index] = {self.size()-row_index, }
+                self.remove_repeatitions(row_index, index)
+        if sides[side] == 'left':
+            for col_index in range(self.size()):
+                self.contents[index][col_index] = {col_index+1, }
+                self.remove_repeatitions(index, col_index)
+        if sides[side] == 'right':
+            for col_index in range(self.size()):
+                self.contents[index][col_index] = {self.size()-col_index, }
+                self.remove_repeatitions(index, col_index)
