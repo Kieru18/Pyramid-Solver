@@ -1,3 +1,4 @@
+from re import M
 from classes import Board
 from pytest import raises
 from exceptions import SizeError
@@ -48,3 +49,17 @@ def test_board_remove_repeatitions():
     assert myboard.contents == [[{2, }, {1, 2}], [{1, 2}, {1, 2}]]
     myboard.remove_repeatitions(0, 0)
     assert myboard.contents == [[{2, }, {1, }], [{1, }, {2, }]]
+
+
+def test_board_set_biggest():
+    myboard = Board(3)
+    test_contents = [[{1, 2, 3}, {1, 2, 3}, {1, 2, 3}] for _ in range(3)]
+    assert myboard.contents == test_contents
+    myboard.set_biggest(2, 0)
+    # 1 > X X X
+    #     X X X
+    #     X X X
+    #     (1 pyramids seen from the left of the first row)
+    result = '{3} {1, 2} {1, 2} \n{1, 2} {1, 2, 3} {1, 2, 3} '
+    result += '\n{1, 2} {1, 2, 3} {1, 2, 3} '
+    assert result == str(myboard)
