@@ -113,11 +113,25 @@ def test_board_make_list():
     myboard = Board(2)
     myboard.set_biggest(0, 0)
     assert myboard.contents == [[{2, }, {1, }], [{1, }, {2, }]]
-    myboard.make_list(0, 0) == [{2, }, {1, }]
-    myboard.make_list(0, 1) == [{1, }, {2, }]
-    myboard.make_list(1, 1) == [{2, }, {1, }]
-    myboard.make_list(1, 0) == [{1, }, {2, }]
-    myboard.make_list(2, 0) == [{2, }, {1, }]
-    myboard.make_list(2, 1) == [{1, }, {2, }]
-    myboard.make_list(3, 1) == [{2, }, {1, }]
-    myboard.make_list(3, 0) == [{1, }, {2, }]
+    myboard._make_list(0, 0) == [2, 1]
+    myboard._make_list(0, 1) == [1, 2]
+    myboard._make_list(1, 1) == [2, 1]
+    myboard._make_list(1, 0) == [1, 2]
+    myboard._make_list(2, 0) == [2, 1]
+    myboard._make_list(2, 1) == [1, 2]
+    myboard._make_list(3, 1) == [2, 1]
+    myboard._make_list(3, 0) == [1, 2]
+
+
+def test_board_visibility():
+    myboard = Board(3)
+    myboard.fill_max(0, 0)
+    myboard.set_biggest(3, 1)
+    result = '{1} {3} {2} \n{2} {1} {3} '
+    result += '\n{3} {2} {1} '
+    assert str(myboard) == result
+    assert myboard.visibility(0, 1) == 1
+    assert myboard.visibility(0, 2) == 2
+    assert myboard.visibility(3, 2) == 3
+    assert myboard.visibility(2, 1) == 2
+    assert myboard.visibility(1, 2) == 2
