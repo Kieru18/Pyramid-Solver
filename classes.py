@@ -33,22 +33,26 @@ class Board():
             output += '\n'
         return output[:-1]
 
-    def make_list(self, side, index):
+    def _make_list(self, side, index):
         my_list = []
         if sides[side] == 'up':
             for row_index in range(self.size()):
-                my_list.append(self.contents[row_index][index])
+                value = list(self.contents[row_index][index])[0]
+                my_list.append(value)
         if sides[side] == 'down':
             for row_index in range(self.size()):
-                my_list.append(self.contents[row_index][index])
-            my_list = my_list.reverse()
+                value = list(self.contents[row_index][index])[0]
+                my_list.append(value)
+            my_list.reverse()
         if sides[side] == 'left':
             for column_index in range(self.size()):
-                my_list.append(self.contents[index][column_index])
+                value = list(self.contents[index][column_index])[0]
+                my_list.append(value)
         if sides[side] == 'right':
             for column_index in range(self.size()):
-                my_list.append(self.contents[index][column_index])
-            my_list = my_list.reverse()
+                value = list(self.contents[index][column_index])[0]
+                my_list.append(value)
+            my_list.reverse()
         return my_list
 
     def visibility(self, side, index):
@@ -57,6 +61,12 @@ class Board():
         solved or during backtracking ! """
         max = 0
         count = 0
+        heights = self._make_list(side, index)
+        for height in heights:
+            if height > max:
+                count += 1
+                max = height
+        return count
 
     def remove_repeatitions(self, row_index, column_index):
         """ removes any repeated numbers in column and row
@@ -149,18 +159,19 @@ class Board():
         to be used in column/row """
         column_positions = set()
         row_positions = set()
-        nums = set(range(1, self.size()+1))
+        nums = set(range(self.size()))
         valueset = {value, }
         for row_index, row in enumerate(self.contents):
             for column_index, values in enumerate(row):
                 if valueset == values:
                     column_positions.add(column_index)
                     row_positions.add(row_index)
-        missing_pos_row = nums.difference(row_positions)
-        missing_pos_row = list(missing_pos_row)[0]
-        missing_pos_column = nums.difference(column_positions)
-        missing_pos_column = list(missing_pos_column)[0]
-        if value in self.contents[missing_pos_row][missing_pos_column]:
-            self.contents[missing_pos_row][missing_pos_column] = {value, }
-        else:
-            raise CannotSolveError()
+        missing_position_row = nums.difference(row_positions)
+        missing_position_column = nums.difference(column_positions)
+        if missing_position_row and missing_position_column: 
+            missing_position_row = list(missing_position_row)[0]
+            missing_position_column = list(missing_position_column)[0]
+            if value in self.contents[missing_position_row][missing_position_column]:
+                self.contents[missing_position_row][missing_position_column] = {value, }
+            else:
+                raise CannotSolveError()
