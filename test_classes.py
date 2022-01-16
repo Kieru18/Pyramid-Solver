@@ -107,3 +107,17 @@ def test_sudoku_rule():
     result = '{3} {1, 2} {1, 2} \n{1, 2} {1, 2} {3} '
     result += '\n{1, 2} {3} {1, 2} '
     assert str(myboard) == result
+
+
+def test_board_make_list():
+    myboard = Board(2)
+    myboard.set_biggest(0, 0)
+    assert myboard.contents == [[{2, }, {1, }], [{1, }, {2, }]]
+    myboard.make_list(0, 0) == [{2, }, {1, }]
+    myboard.make_list(0, 1) == [{1, }, {2, }]
+    myboard.make_list(1, 1) == [{2, }, {1, }]
+    myboard.make_list(1, 0) == [{1, }, {2, }]
+    myboard.make_list(2, 0) == [{2, }, {1, }]
+    myboard.make_list(2, 1) == [{1, }, {2, }]
+    myboard.make_list(3, 1) == [{2, }, {1, }]
+    myboard.make_list(3, 0) == [{1, }, {2, }]

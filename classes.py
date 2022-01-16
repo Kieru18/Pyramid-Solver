@@ -33,6 +33,31 @@ class Board():
             output += '\n'
         return output[:-1]
 
+    def make_list(self, side, index):
+        my_list = []
+        if sides[side] == 'up':
+            for row_index in range(self.size()):
+                my_list.append(self.contents[row_index][index])
+        if sides[side] == 'down':
+            for row_index in range(self.size()):
+                my_list.append(self.contents[row_index][index])
+            my_list = my_list.reverse()
+        if sides[side] == 'left':
+            for column_index in range(self.size()):
+                my_list.append(self.contents[index][column_index])
+        if sides[side] == 'right':
+            for column_index in range(self.size()):
+                my_list.append(self.contents[index][column_index])
+            my_list = my_list.reverse()
+        return my_list
+
+    def visibility(self, side, index):
+        """ checks how many pyramids are visible
+        ! only intended to be used when a row/column has been
+        solved or during backtracking ! """
+        max = 0
+        count = 0
+
     def remove_repeatitions(self, row_index, column_index):
         """ removes any repeated numbers in column and row
         recursively checks row and column for new values to delete """
