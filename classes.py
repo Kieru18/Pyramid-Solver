@@ -98,16 +98,21 @@ class Board():
         if sides[side] == 'up':
             for row_index in range(value-1):
                 numset = nums[-(value-1)+row_index:]
-                self.contents[row_index][index] = self.contents[row_index][index].difference(numset)
+                self.contents[row_index][index] = self.contents[
+                    row_index][index].difference(numset)
         if sides[side] == 'down':
             for row_index in range(value-1):
                 numset = nums[-(value-1)+row_index:]
-                self.contents[self.size()-row_index-1][index] = self.contents[self.size()-row_index-1][index].difference(numset)
+                self.contents[self.size()-row_index-1][index] = self.contents[
+                    self.size()-row_index-1][index].difference(numset)
         if sides[side] == 'left':
             for column_index in range(value-1):
                 numset = nums[-(value-1)+column_index:]
-                self.contents[index][column_index] = self.contents[index][column_index].difference(numset)
+                self.contents[index][column_index] = self.contents[
+                    index][column_index].difference(numset)
         if sides[side] == 'right':
             for column_index in range(value-1):
                 numset = nums[-(value-1)+column_index:]
-                self.contents[index][self.size()-column_index-1] = self.contents[index][self.size()-column_index-1].difference(numset)
+                self.contents[index][
+                    self.size()-column_index-1] = self.contents[
+                        index][self.size()-column_index-1].difference(numset)

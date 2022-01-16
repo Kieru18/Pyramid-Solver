@@ -76,3 +76,17 @@ def test_board_fill_max():
     result = '{1, 2} {1, 3} {2, 3} \n{1, 2} {1, 3} {2, 3} '
     result += '\n{3} {2} {1} '
     assert result == str(myboard)
+
+
+def test_board_fill():
+    myboard = Board(4)
+    test_contents = [
+            [set(range(1, 5)) for _ in range(4)]
+            for _ in range(4)]
+    assert myboard.contents == test_contents
+    myboard.fill(0, 1, 3)
+    result = '{1, 2, 3, 4} {1, 2} {1, 2, 3, 4} {1, 2, 3, 4} \n'
+    result += '{1, 2, 3, 4} {1, 2, 3} {1, 2, 3, 4} {1, 2, 3, 4} \n'
+    result += '{1, 2, 3, 4} {1, 2, 3, 4} {1, 2, 3, 4} {1, 2, 3, 4} \n'
+    result += '{1, 2, 3, 4} {1, 2, 3, 4} {1, 2, 3, 4} {1, 2, 3, 4} '
+    assert result == str(myboard)
