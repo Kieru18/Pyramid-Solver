@@ -1,4 +1,4 @@
-from classes import Board
+from class_board import Board
 from pytest import raises
 from exceptions import SizeError
 
