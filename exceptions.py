@@ -4,3 +4,7 @@ class SizeError(ValueError):
 
 class CannotSolveError(Exception):
     pass
+
+
+class WrongExtensionError(Exception):
+    pass
