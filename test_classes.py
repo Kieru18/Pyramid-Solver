@@ -90,3 +90,20 @@ def test_board_fill():
     result += '{1, 2, 3, 4} {1, 2, 3, 4} {1, 2, 3, 4} {1, 2, 3, 4} \n'
     result += '{1, 2, 3, 4} {1, 2, 3, 4} {1, 2, 3, 4} {1, 2, 3, 4} '
     assert result == str(myboard)
+
+
+def test_sudoku_rule():
+    myboard = Board(3)
+    myboard.set_biggest(0, 0)
+    myboard.set_biggest(3, 1)
+    #     1
+    #     X X X
+    #     X X X 1
+    #     X X X
+    result = '{3} {1, 2} {1, 2} \n{1, 2} {1, 2} {3} '
+    result += '\n{1, 2} {1, 2, 3} {1, 2} '
+    assert str(myboard) == result
+    myboard.sudoku_rule(3)
+    result = '{3} {1, 2} {1, 2} \n{1, 2} {1, 2} {3} '
+    result += '\n{1, 2} {3} {1, 2} '
+    assert str(myboard) == result
