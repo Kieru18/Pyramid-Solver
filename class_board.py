@@ -82,7 +82,7 @@ class Board():
             self.contents[row_index][column_index].add(values)
 
     def set_biggest(self, side, index):
-        """ solves cues with a value of 1
+        """ solves clues with a value of 1
         (fills a cell on the edge with N) """
         if sides[side] == 'up':
             row_index = 0
@@ -100,7 +100,7 @@ class Board():
         self.remove_repeatitions(row_index, column_index)
 
     def fill_max(self, side, index):
-        """ solves cues with a value of N
+        """ solves clues with a value of N
         (fills board with subsequent values from 1 to N) """
         # @FIXME
         # code fragmentarisation
@@ -122,7 +122,7 @@ class Board():
                 self.remove_repeatitions(index, col_index)
 
     def fill(self, side, index, value):
-        """ solves cues with a value between 1 and N
+        """ solves clues with a value between 1 and N
         removes posibilities which would obstruct view
         in cells closer to edge """
         # example: 3|1234|1234|1234|1234| N=4
@@ -166,12 +166,15 @@ class Board():
                 if valueset == values:
                     column_positions.add(column_index)
                     row_positions.add(row_index)
-        missing_position_row = nums.difference(row_positions)
-        missing_position_column = nums.difference(column_positions)
-        if missing_position_row and missing_position_column: 
-            missing_position_row = list(missing_position_row)[0]
-            missing_position_column = list(missing_position_column)[0]
-            if value in self.contents[missing_position_row][missing_position_column]:
-                self.contents[missing_position_row][missing_position_column] = {value, }
+        missing_pos_row = nums.difference(row_positions)
+        missing_pos_column = nums.difference(column_positions)
+        if missing_pos_row and missing_pos_column:
+            missing_pos_row = list(missing_pos_row)[0]
+            missing_pos_column = list(missing_pos_column)[0]
+            if value in self.contents[missing_pos_row][missing_pos_column]:
+                self.contents[missing_pos_row][missing_pos_column] = {value, }
             else:
                 raise CannotSolveError()
+
+    def solve_board(self):
+        pass
