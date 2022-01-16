@@ -67,6 +67,8 @@ class Board():
     def fill_max(self, side, index):
         """ solves cues with a value of N
         (fills board with subsequent values from 1 to N) """
+        # @FIXME
+        # code fragmentarisation
         if sides[side] == 'up':
             for row_index in range(self.size()):
                 self.contents[row_index][index] = {row_index+1, }
@@ -116,3 +118,24 @@ class Board():
                 self.contents[index][
                     self.size()-column_index-1] = self.contents[
                         index][self.size()-column_index-1].difference(numset)
+
+    def sudoku_rule(self, value):
+        """ fills a cell if only one value reamains
+        to be used in column/row """
+        column_positions = set()
+        row_positions = set()
+        nums = set(range(1, self.size()+1))
+        valueset = {value, }
+        for row_index, row in enumerate(self.contents):
+            for column_index, values in enumerate(row):
+                if valueset == values:
+                    column_positions.add(column_index)
+                    row_positions.add(row_index)
+        missing_pos_row = nums.difference(row_positions)
+        missing_pos_row = list(missing_pos_row)[0]
+        missing_pos_column = nums.difference(column_positions)
+        missing_pos_column = list(missing_pos_column)[0]
+        if value in self.contents[missing_pos_row][missing_pos_column]:
+            self.contents[missing_pos_row][missing_pos_column] = {value, }
+        else:
+            raise CannotSolveError()
