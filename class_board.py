@@ -1,7 +1,8 @@
+from socketserver import ThreadingUnixDatagramServer
 from exceptions import SizeError, CannotSolveError, WrongDataError
 from CONST import sides
 from class_clues import Clues
-
+from copy import deepcopy, copy
 
 class Board():
     def __init__(self, size: int = 0, clues=None) -> None:
@@ -197,3 +198,23 @@ class Board():
         for value in self.count:
             if self.count[value] == self.size()-1:
                 self.sudoku_rule(value)
+
+    def validate(self, row_index, col_index, value):
+        pass
+
+    def solve_board(self):
+        board = deepcopy(self.contents)
+        for row_index, row in enumerate(self.contents):
+            for col_index, values in enumerate(row):
+                if len(values) > 1:
+                    for possible_value in values:
+                        if self.validate(row_index, col_index, possible_value):
+                            board[row_index][col_index] = {possible_value, }
+
+                            if self.solve_board():
+                                return True
+                            else:
+                                board[row_index][col_index] = copy(
+                                    self.contents[row_index][col_index])
+                    return False
+        return True
