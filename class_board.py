@@ -35,35 +35,57 @@ class Board():
             output += '\n'
         return output[:-1]
 
-    def _make_list(self, side, index):
+    def _make_list(self, side, index, array):
         my_list = []
         if sides[side] == 'up':
             for row_index in range(self.size()):
-                value = list(self.contents[row_index][index])[0]
+                value = list(array[row_index][index])[0]
                 my_list.append(value)
         if sides[side] == 'down':
             for row_index in range(self.size()):
-                value = list(self.contents[row_index][index])[0]
+                value = list(array[row_index][index])[0]
                 my_list.append(value)
             my_list.reverse()
         if sides[side] == 'left':
             for column_index in range(self.size()):
-                value = list(self.contents[index][column_index])[0]
+                value = list(array[index][column_index])[0]
                 my_list.append(value)
         if sides[side] == 'right':
             for column_index in range(self.size()):
-                value = list(self.contents[index][column_index])[0]
+                value = list(array[index][column_index])[0]
                 my_list.append(value)
             my_list.reverse()
         return my_list
 
-    def visibility(self, side, index):
+    def _make_set_list(self, side, index, array):
+        my_list = []
+        if sides[side] == 'up':
+            for row_index in range(self.size()):
+                value = array[row_index][index]
+                my_list.append(value)
+        if sides[side] == 'down':
+            for row_index in range(self.size()):
+                value = array[row_index][index]
+                my_list.append(value)
+            my_list.reverse()
+        if sides[side] == 'left':
+            for column_index in range(self.size()):
+                value = array[index][column_index]
+                my_list.append(value)
+        if sides[side] == 'right':
+            for column_index in range(self.size()):
+                value = array[index][column_index]
+                my_list.append(value)
+            my_list.reverse()
+        return my_list
+
+    def visibility(self, side, index, array):
         """ checks how many pyramids are visible
         ! only intended to be used when a row/column has been
         solved or during backtracking ! """
         max = 0
         count = 0
-        heights = self._make_list(side, index)
+        heights = self._make_list(side, index, array)
         for height in heights:
             if height > max:
                 count += 1
@@ -79,8 +101,8 @@ class Board():
             for index in range(self.size()):
                 self.contents[row_index][index].discard(values)
                 self.contents[index][column_index].discard(values)
-                self.remove_repeatitions(row_index, index)
-                self.remove_repeatitions(index, column_index)
+                # self.remove_repeatitions(row_index, index)
+                # self.remove_repeatitions(index, column_index)
             self.contents[row_index][column_index].add(values)
 
     def set_biggest(self, side, index):
@@ -182,7 +204,9 @@ class Board():
     def solve_initial_clues(self):
         for side, row in enumerate(self.clues):
             for index, value in enumerate(row):
-                if value == str(self.size()):
+                if value == '0':
+                    continue
+                elif value == str(self.size()):
                     self.fill_max(side, index)
                 elif value == '1':
                     self.set_biggest(side, index)
@@ -199,32 +223,54 @@ class Board():
             if self.count[value] == self.size()-1:
                 self.sudoku_rule(value)
 
+        for row_index, row in enumerate(self.contents):
+            for col_index, value in enumerate(row):
+                self.remove_repeatitions(row_index, col_index)
+
     def validate(self, row_index, col_index, value, board):
         for index in range(self.size()):
             if board[row_index][index] == {value, }:
                 return False
             if board[index][col_index] == {value, }:
                 return False
-            if self.visibility(0, index) >=
+            for side in range(4):
+                if int(self.clues[side][index]):
+                    nums = self._make_set_list(side, index, self.board)
+                    if not all(nums):
+                        if self.visibility(side,
+                                           index,
+                                           board) != int(self.clues[
+                                                        side][index]):
+                            return False
+                    else:
+                        if self.visibility(side,
+                                           index,
+                                           board) > int(self.clues[
+                                                        side][index]):
+                            return False
+        return True
 
-    def solve_board(self):
-        board = deepcopy(self.contents)
-        for row_index, row in enumerate(board):
+    def prep_subsidiary_board(self):
+        self.board = deepcopy(self.contents)
+        for row_index, row in enumerate(self.board):
             for col_index, value in enumerate(row):
                 if len(value) > 1:
-                    value = {0, }
+                    self.board[row_index][col_index] = {0, }
 
+    def solve_board(self):
         for row_index, row in enumerate(self.contents):
             for col_index, values in enumerate(row):
-                if len(values) > 1:
+                if self.board[row_index][col_index] == {0, }:
                     for possible_value in values:
-                        if self.validate(row_index, col_index, possible_value):
-                            board[row_index][col_index] = {possible_value, }
+                        if self.validate(row_index,
+                                         col_index,
+                                         possible_value, self.board):
+                            self.board[
+                                row_index][col_index] = {possible_value, }
 
                             if self.solve_board():
                                 return True
                             else:
-                                board[row_index][col_index] = copy(
-                                    self.contents[row_index][col_index])
+                                self.board[row_index][col_index] = {0, }
                     return False
         return True
