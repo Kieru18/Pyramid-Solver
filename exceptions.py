@@ -8,3 +8,7 @@ class CannotSolveError(Exception):
 
 class WrongExtensionError(Exception):
     pass
+
+
+class WrongDataError(ValueError):
+    pass

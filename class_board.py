@@ -1,15 +1,16 @@
-from exceptions import SizeError, CannotSolveError
+from exceptions import SizeError, CannotSolveError, WrongDataError
 from CONST import sides
+from class_clues import Clues
 
 
 class Board():
-    def __init__(self, size: int = 0) -> None:
+    def __init__(self, size: int = 0, clues=None) -> None:
         self._size = self._check_size(size)
         self.contents = [
             [set(range(1, self._size+1)) for _ in range(self.size())]
             for _ in range(self.size())]
         # representation of the board: sets of possible values
-
+        self.clues = clues
         self.count = {i: 0 for i in range(1, self.size()+1)}
 
     @staticmethod
@@ -176,5 +177,14 @@ class Board():
             else:
                 raise CannotSolveError()
 
-    def solve_board(self):
-        pass
+    def solve_initial_clues(self):
+        for side, row in enumerate(self.clues):
+            for index, value in enumerate(row):
+                if value == str(self.size()):
+                    self.fill_max(side, index)
+                elif value == '1':
+                    self.set_biggest(side, index)
+                elif value in [str(val) for val in range(2, self.size())]:
+                    self.fill(side, index, value)
+                else:
+                    raise(WrongDataError())
