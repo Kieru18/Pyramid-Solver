@@ -199,11 +199,21 @@ class Board():
             if self.count[value] == self.size()-1:
                 self.sudoku_rule(value)
 
-    def validate(self, row_index, col_index, value):
-        pass
+    def validate(self, row_index, col_index, value, board):
+        for index in range(self.size()):
+            if board[row_index][index] == {value, }:
+                return False
+            if board[index][col_index] == {value, }:
+                return False
+            if self.visibility(0, index) >=
 
     def solve_board(self):
         board = deepcopy(self.contents)
+        for row_index, row in enumerate(board):
+            for col_index, value in enumerate(row):
+                if len(value) > 1:
+                    value = {0, }
+
         for row_index, row in enumerate(self.contents):
             for col_index, values in enumerate(row):
                 if len(values) > 1:
