@@ -155,7 +155,7 @@ class Board():
                     self.size()-column_index-1] = self.contents[
                         index][self.size()-column_index-1].difference(numset)
 
-    def sudoku_rule(self, value):
+    def sudoku_rule(self, value: int):
         """ fills a cell if only one value reamains
         to be used in column/row """
         column_positions = set()
@@ -174,6 +174,7 @@ class Board():
             missing_pos_column = list(missing_pos_column)[0]
             if value in self.contents[missing_pos_row][missing_pos_column]:
                 self.contents[missing_pos_row][missing_pos_column] = {value, }
+                self.remove_repeatitions(missing_pos_row, missing_pos_column)
             else:
                 raise CannotSolveError()
 
@@ -188,3 +189,11 @@ class Board():
                     self.fill(side, index, value)
                 else:
                     raise(WrongDataError())
+        for row in self.contents:
+            for value in row:
+                if len(value) == 1:
+                    self.count[list(value)[0]] += 1
+
+        for value in self.count:
+            if self.count[value] == self.size()-1:
+                self.sudoku_rule(value)
