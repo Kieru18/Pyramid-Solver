@@ -1,8 +1,7 @@
-from socketserver import ThreadingUnixDatagramServer
 from exceptions import SizeError, CannotSolveError, WrongDataError
 from CONST import sides
-from class_clues import Clues
-from copy import deepcopy, copy
+from copy import deepcopy
+
 
 class Board():
     def __init__(self, size: int = 0, clues=None) -> None:
@@ -36,6 +35,9 @@ class Board():
         return output[:-1]
 
     def _make_list(self, side, index, array):
+        """ Creates a list of values from a given
+            board-like array for easier
+            constraint checks """
         my_list = []
         if sides[side] == 'up':
             for row_index in range(self.size()):
@@ -58,6 +60,7 @@ class Board():
         return my_list
 
     def _make_set_list(self, side, index, array):
+        """ Creates a list of sets from given board-like array """
         my_list = []
         if sides[side] == 'up':
             for row_index in range(self.size()):
@@ -81,8 +84,7 @@ class Board():
 
     def visibility(self, side, index, array):
         """ checks how many pyramids are visible
-        ! only intended to be used when a row/column has been
-        solved or during backtracking ! """
+        from given side and position """
         max = 0
         count = 0
         heights = self._make_list(side, index, array)
@@ -93,16 +95,14 @@ class Board():
         return count
 
     def remove_repeatitions(self, row_index, column_index):
-        """ removes any repeated numbers in column and row
-        recursively checks row and column for new values to delete """
+        """ removes any repeated numbers
+            from possible values in column and row """
         values = self.contents[row_index][column_index]
         if len(values) == 1:
             values = list(values)[0]
             for index in range(self.size()):
                 self.contents[row_index][index].discard(values)
                 self.contents[index][column_index].discard(values)
-                # self.remove_repeatitions(row_index, index)
-                # self.remove_repeatitions(index, column_index)
             self.contents[row_index][column_index].add(values)
 
     def set_biggest(self, side, index):
@@ -202,6 +202,8 @@ class Board():
                 raise CannotSolveError()
 
     def solve_initial_clues(self):
+        """ solves initial clues - simplifies potential values
+            across the board """
         for side, row in enumerate(self.clues):
             for index, value in enumerate(row):
                 if value == '0':
@@ -228,6 +230,8 @@ class Board():
                 self.remove_repeatitions(row_index, col_index)
 
     def validate(self, row_index, col_index, value, board):
+        """ chekcs if adding given value during backtracking 
+            can lead to further solution """
         for index in range(self.size()):
             if board[row_index][index] == {value, }:
                 return False
@@ -235,29 +239,38 @@ class Board():
                 return False
             for side in range(4):
                 if int(self.clues[side][index]):
-                    nums = self._make_set_list(side, index, self.board)
-                    if not all(nums):
+                    nums = self._make_list(side, index, self.board)
+                    if all(nums):
                         if self.visibility(side,
                                            index,
                                            board) != int(self.clues[
                                                         side][index]):
                             return False
-                    else:
-                        if self.visibility(side,
-                                           index,
-                                           board) > int(self.clues[
-                                                        side][index]):
-                            return False
         return True
 
     def prep_subsidiary_board(self):
+        """ prepares auxillary board for easier backtracking """
         self.board = deepcopy(self.contents)
         for row_index, row in enumerate(self.board):
             for col_index, value in enumerate(row):
                 if len(value) > 1:
                     self.board[row_index][col_index] = {0, }
 
+    def verify(self, solution):
+        """ verifies if current full solution is correct """
+        vars = []
+        for side, row in enumerate(self.clues):
+            for index, clue in enumerate(row):
+                if int(self.clues[side][index]):
+                    vars.append(self.visibility(side,
+                                                index,
+                                                solution) == int(clue))
+
+        return all(vars)
+
     def solve_board(self):
+        """ solves the board
+            (and hopefully not crashes from excess of operations) """
         for row_index, row in enumerate(self.contents):
             for col_index, values in enumerate(row):
                 if self.board[row_index][col_index] == {0, }:
@@ -273,4 +286,7 @@ class Board():
                             else:
                                 self.board[row_index][col_index] = {0, }
                     return False
+        if(not self.verify(self.board)):
+            return False
+
         return True
