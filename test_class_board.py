@@ -1,6 +1,7 @@
 from class_board import Board
 from pytest import raises
 from exceptions import SizeError
+from class_clues import Clues
 
 
 def test_check_size():
@@ -47,7 +48,7 @@ def test_board_remove_repeatitions():
     myboard.contents[0][0] = {2, }
     assert myboard.contents == [[{2, }, {1, 2}], [{1, 2}, {1, 2}]]
     myboard.remove_repeatitions(0, 0)
-    assert myboard.contents == [[{2, }, {1, }], [{1, }, {2, }]]
+    assert myboard.contents == [[{2, }, {1, }], [{1, }, {1, 2}]]
 
 
 def test_board_set_biggest():
@@ -112,26 +113,36 @@ def test_sudoku_rule():
 def test_board_make_list():
     myboard = Board(2)
     myboard.set_biggest(0, 0)
-    assert myboard.contents == [[{2, }, {1, }], [{1, }, {2, }]]
-    myboard._make_list(0, 0) == [2, 1]
-    myboard._make_list(0, 1) == [1, 2]
-    myboard._make_list(1, 1) == [2, 1]
-    myboard._make_list(1, 0) == [1, 2]
-    myboard._make_list(2, 0) == [2, 1]
-    myboard._make_list(2, 1) == [1, 2]
-    myboard._make_list(3, 1) == [2, 1]
-    myboard._make_list(3, 0) == [1, 2]
+    assert myboard.contents == [[{2, }, {1, }], [{1, }, {1, 2}]]
+    myboard._make_list(0, 0, myboard.contents) == [2, 1]
+    myboard._make_list(0, 1, myboard.contents) == [1, 2]
+    myboard._make_list(1, 1, myboard.contents) == [2, 1]
+    myboard._make_list(1, 0, myboard.contents) == [1, 2]
+    myboard._make_list(2, 0, myboard.contents) == [2, 1]
+    myboard._make_list(2, 1, myboard.contents) == [1, 2]
+    myboard._make_list(3, 1, myboard.contents) == [2, 1]
+    myboard._make_list(3, 0, myboard.contents) == [1, 2]
 
 
 def test_board_visibility():
-    myboard = Board(3)
-    myboard.fill_max(0, 0)
-    myboard.set_biggest(3, 1)
-    result = '{1} {3} {2} \n{2} {1} {3} '
-    result += '\n{3} {2} {1} '
-    assert str(myboard) == result
-    assert myboard.visibility(0, 1) == 1
-    assert myboard.visibility(0, 2) == 2
-    assert myboard.visibility(3, 2) == 3
-    assert myboard.visibility(2, 1) == 2
-    assert myboard.visibility(1, 2) == 2
+    input = Clues('test_data.txt')
+    size = len(input.clues[0])
+    myboard = Board(size, clues=input.clues)
+    myboard.solve_initial_clues()
+    myboard.prep_subsidiary_board()
+    myboard.solve_board()
+    assert myboard.visibility(0, 1, myboard.board) == 1
+    assert myboard.visibility(0, 2, myboard.board) == 2
+    assert myboard.visibility(3, 2, myboard.board) == 3
+    assert myboard.visibility(2, 1, myboard.board) == 2
+    assert myboard.visibility(1, 2, myboard.board) == 2
+
+
+def test_verify():
+    input = Clues('test_data3.txt')
+    size = len(input.clues[0])
+    myboard = Board(size, clues=input.clues)
+    myboard.solve_initial_clues()
+    myboard.prep_subsidiary_board()
+    myboard.solve_board()
+    assert myboard.verify(myboard.board)

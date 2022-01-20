@@ -142,7 +142,7 @@ class Board():
                     raise CluesContradicionError()
         if sides[side] == 'down':
             for row_index in range(self.size()):
-                if self.size()-row_index() in self.contents[row_index][index]:
+                if self.size()-row_index in self.contents[row_index][index]:
                     self.contents[row_index][index] = {self.size()-row_index, }
                     self.remove_repeatitions(row_index, index)
                 else:
