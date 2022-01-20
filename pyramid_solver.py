@@ -13,7 +13,7 @@ def main(argv):
     args = parser.parse_args(argv[1:])
     input = Clues(args.input)
     size = len(input.clues[0])
-    # @TODO - checking input for size corectness and cotradictions
+    # @TODO - checking input for size corectness
     board = Board(size, clues=input.clues)
     board.solve_initial_clues()
     board.prep_subsidiary_board()

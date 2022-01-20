@@ -12,3 +12,7 @@ class WrongExtensionError(Exception):
 
 class WrongDataError(ValueError):
     pass
+
+
+class CluesContradicionError(Exception):
+    pass

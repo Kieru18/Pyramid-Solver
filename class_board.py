@@ -1,4 +1,5 @@
-from exceptions import SizeError, CannotSolveError, WrongDataError
+from exceptions import (SizeError, CannotSolveError,
+                        WrongDataError, CluesContradicionError)
 from CONST import sides
 from copy import deepcopy
 
@@ -120,8 +121,11 @@ class Board():
         if sides[side] == 'right':
             row_index = index
             column_index = self.size()-1
-        self.contents[row_index][column_index] = {self.size(), }
-        self.remove_repeatitions(row_index, column_index)
+        if self.size() in self.contents[row_index][column_index]:
+            self.contents[row_index][column_index] = {self.size(), }
+            self.remove_repeatitions(row_index, column_index)
+        else:
+            raise CluesContradicionError()
 
     def fill_max(self, side, index):
         """ solves clues with a value of N
@@ -130,20 +134,32 @@ class Board():
         # code fragmentarisation
         if sides[side] == 'up':
             for row_index in range(self.size()):
-                self.contents[row_index][index] = {row_index+1, }
-                self.remove_repeatitions(row_index, index)
+                if row_index+1 in self.contents[row_index][index]:
+                    self.contents[row_index][index] = {row_index+1, }
+                    self.remove_repeatitions(row_index, index)
+                else:
+                    raise CluesContradicionError()
         if sides[side] == 'down':
             for row_index in range(self.size()):
-                self.contents[row_index][index] = {self.size()-row_index, }
-                self.remove_repeatitions(row_index, index)
+                if self.size()-row_index() in self.contents[row_index][index]:
+                    self.contents[row_index][index] = {self.size()-row_index, }
+                    self.remove_repeatitions(row_index, index)
+                else:
+                    raise CluesContradicionError()
         if sides[side] == 'left':
             for col_index in range(self.size()):
-                self.contents[index][col_index] = {col_index+1, }
-                self.remove_repeatitions(index, col_index)
+                if col_index+1 in self.contents[index][col_index]:
+                    self.contents[index][col_index] = {col_index+1, }
+                    self.remove_repeatitions(index, col_index)
+                else:
+                    raise CluesContradicionError()
         if sides[side] == 'right':
             for col_index in range(self.size()):
-                self.contents[index][col_index] = {self.size()-col_index, }
-                self.remove_repeatitions(index, col_index)
+                if self.size() - col_index in self.contents[index][col_index]:
+                    self.contents[index][col_index] = {self.size()-col_index, }
+                    self.remove_repeatitions(index, col_index)
+                else:
+                    raise CluesContradicionError()
 
     def fill(self, side, index, value):
         """ solves clues with a value between 1 and N
@@ -199,7 +215,7 @@ class Board():
                 self.contents[missing_pos_row][missing_pos_column] = {value, }
                 self.remove_repeatitions(missing_pos_row, missing_pos_column)
             else:
-                raise CannotSolveError()
+                raise CluesContradicionError()
 
     def solve_initial_clues(self):
         """ solves initial clues - simplifies potential values
@@ -230,7 +246,7 @@ class Board():
                 self.remove_repeatitions(row_index, col_index)
 
     def validate(self, row_index, col_index, value, board):
-        """ chekcs if adding given value during backtracking 
+        """ chekcs if adding given value during backtracking
             can lead to further solution """
         for index in range(self.size()):
             if board[row_index][index] == {value, }:
