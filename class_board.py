@@ -1,5 +1,6 @@
-from exceptions import (SizeError, CannotSolveError,
-                        WrongDataError, CluesContradicionError)
+from exceptions import (SizeError,
+                        WrongDataError,
+                        CluesContradicionError)
 from CONST import sides
 from copy import deepcopy
 
