@@ -8,6 +8,8 @@ def main(argv):
     parser = argparse.ArgumentParser()
     parser.add_argument("input", action='store',
                         help="path to input file")
+    parser.add_argument("--save", action='store',
+                        help='path to output file')
     args = parser.parse_args(argv[1:])
     input = Clues(args.input)
     size = len(input.clues[0])
@@ -16,8 +18,16 @@ def main(argv):
     board.solve_initial_clues()
     board.prep_subsidiary_board()
     board.solve_board()
-    for row in board.board:
-        print(row)
+
+    if args.save:
+        with open(args.save, 'w') as file:
+            for row in board.board:
+                str_row = ' '.join(str(list(value)[0]) for value in row)
+                str_row += '\n'
+                file.write(str_row)
+    else:
+        for row in board.board:
+            print(row)
 
 
 if __name__ == "__main__":
