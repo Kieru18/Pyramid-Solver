@@ -1,6 +1,6 @@
 import sys
-from class_board import Board
-from class_clues import Clues
+from board import Board
+from clues import Clues
 import argparse
 from exceptions import CannotSolveError, CluesContradicionError
 
