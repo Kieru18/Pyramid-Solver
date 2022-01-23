@@ -13,9 +13,8 @@ def main(argv):
                         help='path to output file')
     args = parser.parse_args(argv[1:])
     input = Clues(args.input)
-    size = len(input.clues[0])
     # @TODO - checking input for size corectness
-    board = Board(size, clues=input.clues)
+    board = Board(input.clues)
     try:
         board.solve_initial_clues()
         board.prep_subsidiary_board()

@@ -11,13 +11,14 @@ board: TypeAlias = 'list[row]'
 
 
 class Board():
-    def __init__(self, size: int = 0, clues=None) -> None:
+    def __init__(self, clues=None) -> None:
+        self.clues = clues
+        size = len(self.clues[0])
         self._size = self._check_size(size)
         self.contents = [
             [set(range(1, self._size+1)) for _ in range(self.size())]
             for _ in range(self.size())]
         # representation of the board: sets of possible values
-        self.clues = clues
         self.count = {i: 0 for i in range(1, self.size()+1)}
 
     @staticmethod
@@ -26,6 +27,11 @@ class Board():
             raise SizeError()
         else:
             return size
+
+    def _check_clues_size(self) -> bool:
+        length = len(self.clues[0])
+        return all([len(self.clues(i)) == length] for i in range(1, 4))
+
 
     def set_size(self, new_size: int) -> None:
         self._size = self._check_size(new_size)
