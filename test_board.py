@@ -317,7 +317,7 @@ def test_validate(mocker):
     m.assert_called_once_with('baz')
     myboard.solve_initial_clues()
     myboard.prep_subsidiary_board()
-    assert myboard.validate(0, 0, 2, myboard.board) is True
+    assert myboard.validate_unique(0, 0, 2, myboard.board) is True
 
 
 def test_validate2(mocker):
@@ -329,7 +329,7 @@ def test_validate2(mocker):
     myboard.solve_initial_clues()
     myboard.prep_subsidiary_board()
     myboard.board[0][1] = {1, }
-    assert myboard.validate(0, 2, 3, myboard.board) is True
+    assert myboard.validate_unique(0, 2, 3, myboard.board) is True
 
 
 def test_verify(mocker):

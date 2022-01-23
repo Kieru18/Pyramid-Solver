@@ -221,24 +221,14 @@ class Board():
             for col_index, value in enumerate(row):
                 self.remove_repeatitions(row_index, col_index)
 
-    def validate(self, row_index: int, col_index: int,
-                 value: int, board: board_array) -> bool:
-        """ checks if adding given value during backtracking
-            can lead to further solution """
+    def validate_unique(self, row_index: int, col_index: int,
+                        value: int, board: board_array) -> bool:
+        """ checks if a value is unique in given column and row """
         for index in range(self.size()):
             if board[row_index][index] == {value, }:
                 return False
             if board[index][col_index] == {value, }:
                 return False
-            for side in range(4):
-                if int(self.clues[side][index]):
-                    nums = self._make_list(side, index, self.board)
-                    if all(nums):
-                        if self.visibility(side,
-                                           index,
-                                           board) != int(self.clues[
-                                                        side][index]):
-                            return False
         return True
 
     def prep_subsidiary_board(self) -> None:
@@ -267,12 +257,11 @@ class Board():
             for col_index, values in enumerate(row):
                 if self.board[row_index][col_index] == {0, }:
                     for possible_value in values:
-                        if self.validate(row_index,
-                                         col_index,
-                                         possible_value, self.board):
+                        if self.validate_unique(row_index,
+                                                col_index,
+                                                possible_value, self.board):
                             self.board[
                                 row_index][col_index] = {possible_value, }
-
                             if self.solve_board():
                                 return True
                             else:
