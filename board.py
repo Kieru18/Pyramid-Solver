@@ -13,6 +13,9 @@ board: TypeAlias = 'list[row]'
 class Board():
     def __init__(self, clues=None) -> None:
         self.clues = clues
+        if not self._check_clues_size():
+            raise WrongDataError()
+
         size = len(self.clues[0])
         self._size = self._check_size(size)
         self.contents = [
@@ -30,8 +33,14 @@ class Board():
 
     def _check_clues_size(self) -> bool:
         length = len(self.clues[0])
-        return all([len(self.clues(i)) == length] for i in range(1, 4))
-
+        rows = len(self.clues) == 4
+        try:
+            var = all([len(
+                self.clues[i]) == length for i in range(0, 4)]) and rows
+        except IndexError:
+            raise WrongDataError
+        else:
+            return var
 
     def set_size(self, new_size: int) -> None:
         self._size = self._check_size(new_size)
@@ -275,7 +284,7 @@ class Board():
 
     def solve_board(self) -> bool:
         """ solves the board
-            (and hopefully not crashes from excess of operations) """
+            (and hopefully not crashes c: ) """
         for row_index, row in enumerate(self.contents):
             for col_index, values in enumerate(row):
                 if self.board[row_index][col_index] == {0, }:
@@ -291,8 +300,4 @@ class Board():
                             else:
                                 self.board[row_index][col_index] = {0, }
                     return False
-        # if(not self.verify(self.board)):
-        #     return False
-
-        # return True
         return self.verify(self.board)

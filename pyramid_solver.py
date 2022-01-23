@@ -2,7 +2,7 @@ import sys
 from board import Board
 from clues import Clues
 import argparse
-from exceptions import CannotSolveError, CluesContradicionError
+from exceptions import CannotSolveError, CluesContradicionError, WrongDataError
 
 
 def main(argv):
@@ -12,10 +12,10 @@ def main(argv):
     parser.add_argument("--save", action='store',
                         help='path to output file')
     args = parser.parse_args(argv[1:])
-    input = Clues(args.input)
     # @TODO - checking input for size corectness
-    board = Board(input.clues)
     try:
+        input = Clues(args.input)
+        board = Board(input.clues)
         board.solve_initial_clues()
         board.prep_subsidiary_board()
         board.solve_board()
@@ -35,7 +35,7 @@ def main(argv):
                 file.write(message)
         else:
             print(message)
-    except CannotSolveError:
+    except (CannotSolveError, WrongDataError):
         message = 'Programm cannot solve the board. Clues may be incorrect'
         if args.save:
             with open(args.save, 'w') as file:

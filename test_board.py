@@ -1,6 +1,6 @@
 from board import Board
 from pytest import raises
-from exceptions import SizeError
+from exceptions import CluesContradicionError, SizeError, WrongDataError
 from clues import Clues
 
 
@@ -21,6 +21,34 @@ def test_check_size_negative():
 def test_check_size_zero():
     with raises(SizeError):
         _ = Board._check_size(0)
+
+
+def test_check_clues_size(mocker):
+    data = ('0 '*3+'\n')*4
+    m = mocker.patch('builtins.open', mocker.mock_open(read_data=data))
+    input = Clues('foo')
+    myboard = Board(input.clues)
+    m.assert_called_once_with('foo')
+    assert myboard._check_clues_size() is True
+
+
+def test_check_clues_size_3_rows(mocker):
+    data = ('0 '*3+'\n')*3
+    m = mocker.patch('builtins.open', mocker.mock_open(read_data=data))
+    with raises(WrongDataError):
+        input = Clues('foo')
+        _ = Board(input.clues)
+    m.assert_called_once_with('foo')
+
+
+def test_check_clues_size_uneven_rows(mocker):
+    data = ('0 '*3+'\n')*3
+    data += ('0 '*2+'\n')
+    m = mocker.patch('builtins.open', mocker.mock_open(read_data=data))
+    with raises(WrongDataError):
+        input = Clues('foo')
+        _ = Board(input.clues)
+    m.assert_called_once_with('foo')
 
 
 def test_init_size_getter(mocker):
@@ -142,8 +170,17 @@ def test_set_biggest(mocker):
     assert result == str(myboard)
 
 
-def test_set_biggest_contradiction():
-    assert True
+def test_set_biggest_contradiction(mocker):
+    data = ('0 '*3+'\n')*4
+    m = mocker.patch('builtins.open', mocker.mock_open(read_data=data))
+    input = Clues('qux')
+    myboard = Board(input.clues)
+    m.assert_called_once_with('qux')
+    test_contents = [[{1, 2, 3}, {1, 2, 3}, {1, 2, 3}] for _ in range(3)]
+    assert myboard.contents == test_contents
+    myboard.set_biggest(1, 1)
+    with raises(CluesContradicionError):
+        myboard.set_biggest(3, 2)
 
 
 def test_fill_max(mocker):
@@ -162,6 +199,19 @@ def test_fill_max(mocker):
     result = '{1, 2} {1, 3} {2, 3} \n{1, 2} {1, 3} {2, 3} '
     result += '\n{3} {2} {1} '
     assert result == str(myboard)
+
+
+def test_fill_max_contradiction(mocker):
+    data = ('0 '*3+'\n')*4
+    m = mocker.patch('builtins.open', mocker.mock_open(read_data=data))
+    input = Clues('baz')
+    myboard = Board(input.clues)
+    m.assert_called_once_with('baz')
+    test_contents = [[{1, 2, 3}, {1, 2, 3}, {1, 2, 3}] for _ in range(3)]
+    assert myboard.contents == test_contents
+    myboard.fill_max(1, 1)
+    with raises(CluesContradicionError):
+        myboard.fill_max(3, 2)
 
 
 def test_fill(mocker):
@@ -201,6 +251,47 @@ def test_sudoku_rule(mocker):
     result = '{3} {1, 2} {1, 2} \n{1, 2} {1, 2} {3} '
     result += '\n{1, 2} {3} {1, 2} '
     assert str(myboard) == result
+
+
+def test_sudoku_rule_contradiction(mocker):
+    data = ('0 '*4+'\n')*4
+    m = mocker.patch('builtins.open', mocker.mock_open(read_data=data))
+    input = Clues('baz')
+    myboard = Board(input.clues)
+    m.assert_called_once_with('baz')
+    myboard.fill_max(2, 3)
+    myboard.fill_max(1, 0)
+    myboard.fill(3, 2, 3)
+    myboard.contents[1][1] = {4, }
+    with raises(CluesContradicionError):
+        myboard.sudoku_rule(4)
+
+
+def test_solve_initial_clues(mocker):
+    data = '1 0 0 \n'
+    data += ('0 '*3+'\n')*2
+    data += '0 0 1 \n'
+    m = mocker.patch('builtins.open', mocker.mock_open(read_data=data))
+    input = Clues('baz')
+    myboard = Board(input.clues)
+    m.assert_called_once_with('baz')
+    myboard.solve_initial_clues()
+    test_contents = [[{3, }, {1, 2}, {1, 2}],
+                     [{1, 2}, {3, }, {1, 2}],
+                     [{1, 2}, {1, 2, }, {3, }]]
+    assert myboard.contents == test_contents
+
+
+def test_solve_initial_clues_wrong_clue(mocker):
+    data = '9 0 0 \n'
+    data += ('0 '*3+'\n')*2
+    data += '0 0 1 \n'
+    m = mocker.patch('builtins.open', mocker.mock_open(read_data=data))
+    input = Clues('baz')
+    myboard = Board(input.clues)
+    m.assert_called_once_with('baz')
+    with raises(WrongDataError):
+        myboard.solve_initial_clues()
 
 
 def test_verify(mocker):
