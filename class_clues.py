@@ -1,5 +1,4 @@
-from os.path import splitext
-from exceptions import WrongExtensionError
+from model_io import read_from_file
 
 
 class Clues():
@@ -7,10 +6,5 @@ class Clues():
         self.load_data_from_file(filename)
 
     def load_data_from_file(self, filename: str):
-        self.clues = []
-        ext = splitext(filename)
-        if ext[1] not in ['.txt', '.csv']:
-            raise WrongExtensionError()
         with open(filename) as file:
-            for line in file:
-                self.clues.append(line.strip().split())
+            self.clues = read_from_file(file)
