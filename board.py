@@ -283,8 +283,7 @@ class Board():
         return all(vars)
 
     def solve_board(self) -> bool:
-        """ solves the board
-            (and hopefully not crashes c: ) """
+        """ solves the board """
         for row_index, row in enumerate(self.contents):
             for col_index, values in enumerate(row):
                 if self.board[row_index][col_index] == {0, }:

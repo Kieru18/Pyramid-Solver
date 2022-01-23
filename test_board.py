@@ -294,7 +294,7 @@ def test_solve_initial_clues_wrong_clue(mocker):
         myboard.solve_initial_clues()
 
 
-def test_verify(mocker):
+def test_prep_subsidiary_board(mocker):
     data = '0 0 1 0\n0 0 0 0\n0 0 1 0\n0 0 2 2'
     m = mocker.patch('builtins.open', mocker.mock_open(read_data=data))
     input = Clues('baz')
@@ -302,5 +302,90 @@ def test_verify(mocker):
     m.assert_called_once_with('baz')
     myboard.solve_initial_clues()
     myboard.prep_subsidiary_board()
+    test_board = [[{0, }, {0, }, {4, }, {0, }],
+                  [{0, } for _ in range(4)],
+                  [{4, }, {0, }, {0, }, {0, }],
+                  [{0, } for _ in range(4)]]
+    assert myboard.board == test_board
+
+
+def test_validate(mocker):
+    data = '0 0 1 0\n0 0 0 0\n0 0 1 0\n0 0 2 2'
+    m = mocker.patch('builtins.open', mocker.mock_open(read_data=data))
+    input = Clues('baz')
+    myboard = Board(input.clues)
+    m.assert_called_once_with('baz')
+    myboard.solve_initial_clues()
+    myboard.prep_subsidiary_board()
+    assert myboard.validate(0, 0, 2, myboard.board) is True
+
+
+def test_validate2(mocker):
+    data = '0 0 0 0\n0 0 0 4\n3 0 0 0\n0 0 0 0'
+    m = mocker.patch('builtins.open', mocker.mock_open(read_data=data))
+    input = Clues('baz')
+    myboard = Board(input.clues)
+    m.assert_called_once_with('baz')
+    myboard.solve_initial_clues()
+    myboard.prep_subsidiary_board()
+    myboard.board[0][1] = {1, }
+    assert myboard.validate(0, 2, 3, myboard.board) is True
+
+
+def test_verify(mocker):
+    data = '0 0 1 0\n0 0 0 0\n0 0 1 0\n0 0 2 2'
+    m = mocker.patch('builtins.open', mocker.mock_open(read_data=data))
+    input = Clues('baz')
+    myboard = Board(input.clues)
+    m.assert_called_once_with('baz')
+    myboard.board = [[{2, }, {3, }, {4, }, {1, }],
+                     [{1, }, {2, }, {3, }, {4, }],
+                     [{4, }, {1, }, {2, }, {3, }],
+                     [{3, }, {4, }, {1, }, {2, }]]
+    assert myboard.verify(myboard.board) is True
+
+
+def test_verify_wrong(mocker):
+    data = '0 0 1 0\n0 0 0 0\n0 0 1 0\n0 0 2 2'
+    m = mocker.patch('builtins.open', mocker.mock_open(read_data=data))
+    input = Clues('baz')
+    myboard = Board(input.clues)
+    m.assert_called_once_with('baz')
+    myboard.board = [[{1, }, {2, }, {4, }, {3, }],
+                     [{2, }, {3, }, {1, }, {4, }],
+                     [{4, }, {1, }, {3, }, {2, }],
+                     [{3, }, {4, }, {2, }, {1, }]]
+    assert myboard.verify(myboard.board) is False
+
+
+def test_solve_board(mocker):
+    data = '0 0 1 0\n0 0 0 0\n0 0 1 0\n0 0 2 2'
+    m = mocker.patch('builtins.open', mocker.mock_open(read_data=data))
+    input = Clues('baz')
+    myboard = Board(input.clues)
+    test_board = [[{2, }, {3, }, {4, }, {1, }],
+                  [{1, }, {2, }, {3, }, {4, }],
+                  [{4, }, {1, }, {2, }, {3, }],
+                  [{3, }, {4, }, {1, }, {2, }]]
+    m.assert_called_once_with('baz')
+    myboard.prep_subsidiary_board()
     myboard.solve_board()
-    assert myboard.verify(myboard.board)
+    assert myboard.board == test_board
+
+
+def test_solve_board_with_init_clues_reduction(mocker):
+    data = '0 0 0 2 2 0 \n0 0 0 0 4 0 \n0 0 3 0 4 4 \n0 0 0 6 3 0 \n'
+    m = mocker.patch('builtins.open', mocker.mock_open(read_data=data))
+    input = Clues('baz')
+    myboard = Board(input.clues)
+    test_board = [[{5, }, {6, }, {1, }, {4, }, {3, }, {2, }],
+                  [{4, }, {1, }, {3, }, {2, }, {6, }, {5, }],
+                  [{2, }, {3, }, {6, }, {1, }, {5, }, {4, }],
+                  [{6, }, {5, }, {4, }, {3, }, {2, }, {1, }],
+                  [{1, }, {2, }, {5, }, {6, }, {4, }, {3, }],
+                  [{3, }, {4, }, {2, }, {5, }, {1, }, {6, }]]
+    m.assert_called_once_with('baz')
+    myboard.solve_initial_clues()
+    myboard.prep_subsidiary_board()
+    myboard.solve_board()
+    assert myboard.board == test_board

@@ -12,7 +12,6 @@ def main(argv):
     parser.add_argument("--save", action='store',
                         help='path to output file')
     args = parser.parse_args(argv[1:])
-    # @TODO - checking input for size corectness
     try:
         input = Clues(args.input)
         board = Board(input.clues)
