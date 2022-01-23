@@ -1,18 +1,15 @@
-from typing_extensions import TypeAlias
 from exceptions import (SizeError,
                         WrongDataError,
                         CluesContradicionError)
-from CONST import sides
+from CONST import sides, board_array
 from copy import deepcopy
-
-
-row: TypeAlias = "list['set']"
-board: TypeAlias = 'list[row]'
+from clues import Clues
 
 
 class Board():
-    def __init__(self, clues=None) -> None:
-        self.clues = clues
+    """ Representation of a board. """
+    def __init__(self, clues: 'Clues' = None) -> None:
+        self.clues = clues.content
         if not self._check_clues_size():
             raise WrongDataError()
 
@@ -21,7 +18,6 @@ class Board():
         self.contents = [
             [set(range(1, self._size+1)) for _ in range(self.size())]
             for _ in range(self.size())]
-        # representation of the board: sets of possible values
         self.count = {i: 0 for i in range(1, self.size()+1)}
 
     @staticmethod
@@ -56,7 +52,8 @@ class Board():
             output += '\n'
         return output[:-1]
 
-    def _make_list(self, side: int, index: int, array: board) -> 'list[int]':
+    def _make_list(self, side: int,
+                   index: int, array: board_array) -> 'list[int]':
         """ Creates a list of values from a given
             board-like array for easier
             constraint checks """
@@ -81,7 +78,7 @@ class Board():
             my_list.reverse()
         return my_list
 
-    def visibility(self, side: int, index: int, array: board) -> int:
+    def visibility(self, side: int, index: int, array: board_array) -> int:
         """ checks how many pyramids are visible
             from given side and position """
         max = 0
@@ -243,7 +240,7 @@ class Board():
                 self.remove_repeatitions(row_index, col_index)
 
     def validate(self, row_index: int, col_index: int,
-                 value: int, board: board) -> bool:
+                 value: int, board: board_array) -> bool:
         """ checks if adding given value during backtracking
             can lead to further solution """
         for index in range(self.size()):
@@ -270,7 +267,7 @@ class Board():
                 if len(value) > 1:
                     self.board[row_index][col_index] = {0, }
 
-    def verify(self, solution: board) -> bool:
+    def verify(self, solution: board_array) -> bool:
         """ verifies if current full solution is correct """
         vars = []
         for side, row in enumerate(self.clues):

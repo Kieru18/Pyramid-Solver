@@ -7,5 +7,5 @@ def test_clues_init(mocker):
     m = mocker.patch('builtins.open', mocker.mock_open(read_data=test_data))
     my_clues = Clues('foo')
     m.assert_called_once_with('foo')
-    assert my_clues.clues == [['0', '3', '2', '0'], ['0', '0', '0', '4'],
-                              ['0', '1', '0', '0'], ['0', '0', '0', '0']]
+    assert my_clues.content == [['0', '3', '2', '0'], ['0', '0', '0', '4'],
+                                ['0', '1', '0', '0'], ['0', '0', '0', '0']]

@@ -27,7 +27,7 @@ def test_check_clues_size(mocker):
     data = ('0 '*3+'\n')*4
     m = mocker.patch('builtins.open', mocker.mock_open(read_data=data))
     input = Clues('foo')
-    myboard = Board(input.clues)
+    myboard = Board(input)
     m.assert_called_once_with('foo')
     assert myboard._check_clues_size() is True
 
@@ -37,7 +37,7 @@ def test_check_clues_size_3_rows(mocker):
     m = mocker.patch('builtins.open', mocker.mock_open(read_data=data))
     with raises(WrongDataError):
         input = Clues('foo')
-        _ = Board(input.clues)
+        _ = Board(input)
     m.assert_called_once_with('foo')
 
 
@@ -47,7 +47,7 @@ def test_check_clues_size_uneven_rows(mocker):
     m = mocker.patch('builtins.open', mocker.mock_open(read_data=data))
     with raises(WrongDataError):
         input = Clues('foo')
-        _ = Board(input.clues)
+        _ = Board(input)
     m.assert_called_once_with('foo')
 
 
@@ -55,7 +55,7 @@ def test_init_size_getter(mocker):
     data = ('0 '*12+'\n')*4
     m = mocker.patch('builtins.open', mocker.mock_open(read_data=data))
     input = Clues('foo')
-    myboard = Board(input.clues)
+    myboard = Board(input)
     m.assert_called_once_with('foo')
     assert myboard._size == 12
     assert myboard.size() == 12
@@ -65,7 +65,7 @@ def test_set_size(mocker):
     data = ('0 '*12+'\n')*4
     m = mocker.patch('builtins.open', mocker.mock_open(read_data=data))
     input = Clues('foo')
-    myboard = Board(input.clues)
+    myboard = Board(input)
     m.assert_called_once_with('foo')
     assert myboard.size() == 12
     myboard.set_size(2)
@@ -76,7 +76,7 @@ def test_set_size_negative(mocker):
     data = ('0 '*12+'\n')*4
     m = mocker.patch('builtins.open', mocker.mock_open(read_data=data))
     input = Clues('foo')
-    myboard = Board(input.clues)
+    myboard = Board(input)
     m.assert_called_once_with('foo')
     assert myboard.size() == 12
     with raises(SizeError):
@@ -87,7 +87,7 @@ def test_contents_count_empty_init(mocker):
     data = ('0 '*3+'\n')*4
     m = mocker.patch('builtins.open', mocker.mock_open(read_data=data))
     input = Clues('foo')
-    myboard = Board(input.clues)
+    myboard = Board(input)
     m.assert_called_once_with('foo')
     test_contents = [[{1, 2, 3}, {1, 2, 3}, {1, 2, 3}] for _ in range(3)]
     test_clues = [['0', '0', '0'] for _ in range(4)]
@@ -101,7 +101,7 @@ def test_str(mocker):
     data = ('0 '*2+'\n')*4
     m = mocker.patch('builtins.open', mocker.mock_open(read_data=data))
     input = Clues('foo')
-    myboard = Board(input.clues)
+    myboard = Board(input)
     m.assert_called_once_with('foo')
     assert str(myboard) == "{1, 2} {1, 2} \n{1, 2} {1, 2} "
 
@@ -110,7 +110,7 @@ def test_make_list(mocker):
     data = ('0 '*2+'\n')*4
     m = mocker.patch('builtins.open', mocker.mock_open(read_data=data))
     input = Clues('foo')
-    myboard = Board(input.clues)
+    myboard = Board(input)
     m.assert_called_once_with('foo')
     myboard.set_biggest(0, 0)
     assert myboard.contents == [[{2, }, {1, }], [{1, }, {1, 2}]]
@@ -129,7 +129,7 @@ def test_visibility(mocker):
     m = mocker.patch('builtins.open', mocker.mock_open(read_data=test_data))
     input = Clues('bar')
     m.assert_called_once_with('bar')
-    myboard = Board(input.clues)
+    myboard = Board(input)
     myboard.solve_initial_clues()
     myboard.prep_subsidiary_board()
     myboard.solve_board()
@@ -144,7 +144,7 @@ def test_remove_repeatitions(mocker):
     data = ('0 '*2+'\n')*4
     m = mocker.patch('builtins.open', mocker.mock_open(read_data=data))
     input = Clues('baz')
-    myboard = Board(input.clues)
+    myboard = Board(input)
     m.assert_called_once_with('baz')
     myboard.contents[0][0] = {2, }
     assert myboard.contents == [[{2, }, {1, 2}], [{1, 2}, {1, 2}]]
@@ -156,7 +156,7 @@ def test_set_biggest(mocker):
     data = ('0 '*3+'\n')*4
     m = mocker.patch('builtins.open', mocker.mock_open(read_data=data))
     input = Clues('qux')
-    myboard = Board(input.clues)
+    myboard = Board(input)
     m.assert_called_once_with('qux')
     test_contents = [[{1, 2, 3}, {1, 2, 3}, {1, 2, 3}] for _ in range(3)]
     assert myboard.contents == test_contents
@@ -174,7 +174,7 @@ def test_set_biggest_contradiction(mocker):
     data = ('0 '*3+'\n')*4
     m = mocker.patch('builtins.open', mocker.mock_open(read_data=data))
     input = Clues('qux')
-    myboard = Board(input.clues)
+    myboard = Board(input)
     m.assert_called_once_with('qux')
     test_contents = [[{1, 2, 3}, {1, 2, 3}, {1, 2, 3}] for _ in range(3)]
     assert myboard.contents == test_contents
@@ -187,7 +187,7 @@ def test_fill_max(mocker):
     data = ('0 '*3+'\n')*4
     m = mocker.patch('builtins.open', mocker.mock_open(read_data=data))
     input = Clues('baz')
-    myboard = Board(input.clues)
+    myboard = Board(input)
     m.assert_called_once_with('baz')
     test_contents = [[{1, 2, 3}, {1, 2, 3}, {1, 2, 3}] for _ in range(3)]
     assert myboard.contents == test_contents
@@ -205,7 +205,7 @@ def test_fill_max_contradiction(mocker):
     data = ('0 '*3+'\n')*4
     m = mocker.patch('builtins.open', mocker.mock_open(read_data=data))
     input = Clues('baz')
-    myboard = Board(input.clues)
+    myboard = Board(input)
     m.assert_called_once_with('baz')
     test_contents = [[{1, 2, 3}, {1, 2, 3}, {1, 2, 3}] for _ in range(3)]
     assert myboard.contents == test_contents
@@ -218,7 +218,7 @@ def test_fill(mocker):
     data = ('0 '*4+'\n')*4
     m = mocker.patch('builtins.open', mocker.mock_open(read_data=data))
     input = Clues('baz')
-    myboard = Board(input.clues)
+    myboard = Board(input)
     m.assert_called_once_with('baz')
     test_contents = [
             [set(range(1, 5)) for _ in range(4)]
@@ -236,7 +236,7 @@ def test_sudoku_rule(mocker):
     data = ('0 '*3+'\n')*4
     m = mocker.patch('builtins.open', mocker.mock_open(read_data=data))
     input = Clues('baz')
-    myboard = Board(input.clues)
+    myboard = Board(input)
     m.assert_called_once_with('baz')
     myboard.set_biggest(0, 0)
     myboard.set_biggest(3, 1)
@@ -257,7 +257,7 @@ def test_sudoku_rule_contradiction(mocker):
     data = ('0 '*4+'\n')*4
     m = mocker.patch('builtins.open', mocker.mock_open(read_data=data))
     input = Clues('baz')
-    myboard = Board(input.clues)
+    myboard = Board(input)
     m.assert_called_once_with('baz')
     myboard.fill_max(2, 3)
     myboard.fill_max(1, 0)
@@ -273,7 +273,7 @@ def test_solve_initial_clues(mocker):
     data += '0 0 1 \n'
     m = mocker.patch('builtins.open', mocker.mock_open(read_data=data))
     input = Clues('baz')
-    myboard = Board(input.clues)
+    myboard = Board(input)
     m.assert_called_once_with('baz')
     myboard.solve_initial_clues()
     test_contents = [[{3, }, {1, 2}, {1, 2}],
@@ -288,7 +288,7 @@ def test_solve_initial_clues_wrong_clue(mocker):
     data += '0 0 1 \n'
     m = mocker.patch('builtins.open', mocker.mock_open(read_data=data))
     input = Clues('baz')
-    myboard = Board(input.clues)
+    myboard = Board(input)
     m.assert_called_once_with('baz')
     with raises(WrongDataError):
         myboard.solve_initial_clues()
@@ -298,7 +298,7 @@ def test_prep_subsidiary_board(mocker):
     data = '0 0 1 0\n0 0 0 0\n0 0 1 0\n0 0 2 2'
     m = mocker.patch('builtins.open', mocker.mock_open(read_data=data))
     input = Clues('baz')
-    myboard = Board(input.clues)
+    myboard = Board(input)
     m.assert_called_once_with('baz')
     myboard.solve_initial_clues()
     myboard.prep_subsidiary_board()
@@ -313,7 +313,7 @@ def test_validate(mocker):
     data = '0 0 1 0\n0 0 0 0\n0 0 1 0\n0 0 2 2'
     m = mocker.patch('builtins.open', mocker.mock_open(read_data=data))
     input = Clues('baz')
-    myboard = Board(input.clues)
+    myboard = Board(input)
     m.assert_called_once_with('baz')
     myboard.solve_initial_clues()
     myboard.prep_subsidiary_board()
@@ -324,7 +324,7 @@ def test_validate2(mocker):
     data = '0 0 0 0\n0 0 0 4\n3 0 0 0\n0 0 0 0'
     m = mocker.patch('builtins.open', mocker.mock_open(read_data=data))
     input = Clues('baz')
-    myboard = Board(input.clues)
+    myboard = Board(input)
     m.assert_called_once_with('baz')
     myboard.solve_initial_clues()
     myboard.prep_subsidiary_board()
@@ -336,7 +336,7 @@ def test_verify(mocker):
     data = '0 0 1 0\n0 0 0 0\n0 0 1 0\n0 0 2 2'
     m = mocker.patch('builtins.open', mocker.mock_open(read_data=data))
     input = Clues('baz')
-    myboard = Board(input.clues)
+    myboard = Board(input)
     m.assert_called_once_with('baz')
     myboard.board = [[{2, }, {3, }, {4, }, {1, }],
                      [{1, }, {2, }, {3, }, {4, }],
@@ -349,7 +349,7 @@ def test_verify_wrong(mocker):
     data = '0 0 1 0\n0 0 0 0\n0 0 1 0\n0 0 2 2'
     m = mocker.patch('builtins.open', mocker.mock_open(read_data=data))
     input = Clues('baz')
-    myboard = Board(input.clues)
+    myboard = Board(input)
     m.assert_called_once_with('baz')
     myboard.board = [[{1, }, {2, }, {4, }, {3, }],
                      [{2, }, {3, }, {1, }, {4, }],
@@ -362,7 +362,7 @@ def test_solve_board(mocker):
     data = '0 0 1 0\n0 0 0 0\n0 0 1 0\n0 0 2 2'
     m = mocker.patch('builtins.open', mocker.mock_open(read_data=data))
     input = Clues('baz')
-    myboard = Board(input.clues)
+    myboard = Board(input)
     test_board = [[{2, }, {3, }, {4, }, {1, }],
                   [{1, }, {2, }, {3, }, {4, }],
                   [{4, }, {1, }, {2, }, {3, }],
@@ -377,7 +377,7 @@ def test_solve_board_with_init_clues_reduction(mocker):
     data = '0 0 0 2 2 0 \n0 0 0 0 4 0 \n0 0 3 0 4 4 \n0 0 0 6 3 0 \n'
     m = mocker.patch('builtins.open', mocker.mock_open(read_data=data))
     input = Clues('baz')
-    myboard = Board(input.clues)
+    myboard = Board(input)
     test_board = [[{5, }, {6, }, {1, }, {4, }, {3, }, {2, }],
                   [{4, }, {1, }, {3, }, {2, }, {6, }, {5, }],
                   [{2, }, {3, }, {6, }, {1, }, {5, }, {4, }],

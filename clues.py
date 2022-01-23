@@ -7,4 +7,4 @@ class Clues():
 
     def load_data_from_file(self, filename: str) -> None:
         with open(filename) as file:
-            self.clues = read_from_file(file)
+            self.content = read_from_file(file)
