@@ -14,7 +14,7 @@ def main(argv):
     args = parser.parse_args(argv[1:])
     try:
         input = Clues(args.input)
-        board = Board(input.clues)
+        board = Board(input)
         board.solve_initial_clues()
         board.prep_subsidiary_board()
         board.solve_board()

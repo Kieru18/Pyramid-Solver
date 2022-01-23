@@ -107,13 +107,13 @@ class Board():
         if sides[side] == 'up':
             row_index = 0
             column_index = index
-        if sides[side] == 'down':
+        elif sides[side] == 'down':
             row_index = self.size()-1
             column_index = index
-        if sides[side] == 'left':
+        elif sides[side] == 'left':
             row_index = index
             column_index = 0
-        if sides[side] == 'right':
+        elif sides[side] == 'right':
             row_index = index
             column_index = self.size()-1
         if self.size() in self.contents[row_index][column_index]:
@@ -125,36 +125,24 @@ class Board():
     def fill_max(self, side: int, index: int) -> None:
         """ solves clues with a value of N
         (fills board with subsequent values from 1 to N) """
-        # @FIXME
-        # code fragmentarisation
-        if sides[side] == 'up':
-            for row_index in range(self.size()):
-                if row_index+1 in self.contents[row_index][index]:
-                    self.contents[row_index][index] = {row_index+1, }
-                    self.remove_repeatitions(row_index, index)
-                else:
-                    raise CluesContradicionError()
-        if sides[side] == 'down':
-            for row_index in range(self.size()):
-                if self.size()-row_index in self.contents[row_index][index]:
-                    self.contents[row_index][index] = {self.size()-row_index, }
-                    self.remove_repeatitions(row_index, index)
-                else:
-                    raise CluesContradicionError()
-        if sides[side] == 'left':
-            for col_index in range(self.size()):
-                if col_index+1 in self.contents[index][col_index]:
-                    self.contents[index][col_index] = {col_index+1, }
-                    self.remove_repeatitions(index, col_index)
-                else:
-                    raise CluesContradicionError()
-        if sides[side] == 'right':
-            for col_index in range(self.size()):
-                if self.size() - col_index in self.contents[index][col_index]:
-                    self.contents[index][col_index] = {self.size()-col_index, }
-                    self.remove_repeatitions(index, col_index)
-                else:
-                    raise CluesContradicionError()
+        nums = [i+1 for i in range(self.size())]
+        if sides[side] in {'right', 'down'}:
+            nums.reverse()
+        if sides[side] in {'up', 'down'}:
+            col_index = index
+        else:
+            row_index = index
+
+        for pos, num in enumerate(nums):
+            if sides[side] in {'up', 'down'}:
+                row_index = pos
+            else:
+                col_index = pos
+            if num in self.contents[row_index][col_index]:
+                self.contents[row_index][col_index] = {num, }
+                self.remove_repeatitions(row_index, col_index)
+            else:
+                raise CluesContradicionError()
 
     def fill(self, side: int, index: int, value: int) -> None:
         """ solves clues with a value between 1 and N
@@ -162,31 +150,25 @@ class Board():
         in cells closer to edge """
         # example: 3|1234|1234|1234|1234| N=4
         #   =>      |12  |123 |1234|1234|
-
-        # @FIXME
-        # code fragmentarisation
         nums = [i for i in range(1, self.size()+1)]
-        if sides[side] == 'up':
-            for row_index in range(value-1):
-                numset = nums[-(value-1)+row_index:]
-                self.contents[row_index][index] = self.contents[
-                    row_index][index].difference(numset)
-        if sides[side] == 'down':
-            for row_index in range(value-1):
-                numset = nums[-(value-1)+row_index:]
-                self.contents[self.size()-row_index-1][index] = self.contents[
-                    self.size()-row_index-1][index].difference(numset)
-        if sides[side] == 'left':
-            for column_index in range(value-1):
-                numset = nums[-(value-1)+column_index:]
-                self.contents[index][column_index] = self.contents[
-                    index][column_index].difference(numset)
-        if sides[side] == 'right':
-            for column_index in range(value-1):
-                numset = nums[-(value-1)+column_index:]
-                self.contents[index][
-                    self.size()-column_index-1] = self.contents[
-                        index][self.size()-column_index-1].difference(numset)
+        if sides[side] in {'up', 'down'}:
+            col_index = index
+        else:
+            row_index = index
+
+        for pos in range(value-1):
+            numset = nums[-(value-1)+pos:]
+            if sides[side] == 'up':
+                row_index = pos
+            if sides[side] == 'down':
+                row_index = self.size()-pos-1
+            if sides[side] == 'left':
+                col_index = pos
+            if sides[side] == 'right':
+                col_index = self.size()-pos-1
+
+            self.contents[row_index][col_index] = self.contents[
+                    row_index][col_index].difference(numset)
 
     def sudoku_rule(self, value: int) -> None:
         """ fills a cell if only one value reamains
