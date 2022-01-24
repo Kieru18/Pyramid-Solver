@@ -17,7 +17,8 @@ def main(argv):
         board = Board(input)
         board.solve_initial_clues()
         board.prep_subsidiary_board()
-        board.solve_board()
+        if not board.solve_board():
+            raise CannotSolveError
         if args.save:
             with open(args.save, 'w') as file:
                 output = ''
@@ -43,7 +44,7 @@ def main(argv):
         else:
             print(message)
     except (CannotSolveError, WrongDataError):
-        message = 'Programm cannot solve the board. Clues may be incorrect'
+        message = 'Program cannot solve the board. Clues may be incorrect'
         if args.save:
             with open(args.save, 'w') as file:
                 file.write(message)

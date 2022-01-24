@@ -1,2 +1,2 @@
-Project providing solutions for Pyramid Puzzles.
-For further details, read PyramidLogicPuzzleDocumentation.pdf 
+**Project providing solutions for Pyramid Puzzles.**
+Further details and user manual are located in PyramidLogicPuzzleDocumentation.pdf 
