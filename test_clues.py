@@ -1,5 +1,4 @@
 from clues import Clues
-# from pytest_mock import mocker
 
 
 def test_clues_init(mocker):
