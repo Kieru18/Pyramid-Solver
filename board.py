@@ -182,11 +182,14 @@ class Board():
                 if valueset == values:
                     column_positions.add(column_index)
                     row_positions.add(row_index)
+
         missing_pos_row = nums.difference(row_positions)
         missing_pos_column = nums.difference(column_positions)
+
         if missing_pos_row and missing_pos_column:
             missing_pos_row = list(missing_pos_row)[0]
             missing_pos_column = list(missing_pos_column)[0]
+
             if value in self.contents[missing_pos_row][missing_pos_column]:
                 self.contents[missing_pos_row][missing_pos_column] = {value, }
                 self.remove_repeatitions(missing_pos_row, missing_pos_column)
@@ -248,7 +251,6 @@ class Board():
                     vars.append(self.visibility(side,
                                                 index,
                                                 solution) == int(clue))
-
         return all(vars)
 
     def solve_board(self) -> bool:

@@ -20,13 +20,21 @@ def main(argv):
         board.solve_board()
         if args.save:
             with open(args.save, 'w') as file:
+                output = ''
                 for row in board.board:
                     str_row = ' '.join(str(list(value)[0]) for value in row)
                     str_row += '\n'
-                    file.write(str_row)
+                    output += str_row
+                output = output.rstrip()
+                file.write(output)
         else:
+            output = ''
             for row in board.board:
-                print(row)
+                str_row = ' '.join(str(list(value)[0]) for value in row)
+                str_row += '\n'
+                output += str_row
+            output = output.rstrip()
+            print(output)
     except CluesContradicionError:
         message = 'Cannot solve - clues contradict themselves'
         if args.save:
