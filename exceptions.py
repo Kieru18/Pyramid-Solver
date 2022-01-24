@@ -6,10 +6,6 @@ class CannotSolveError(Exception):
     pass
 
 
-class WrongExtensionError(Exception):
-    pass
-
-
 class WrongDataError(ValueError):
     pass
 
